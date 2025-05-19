@@ -8,152 +8,227 @@ document.addEventListener("DOMContentLoaded", function () {
   const indicator = document.querySelector(".indicator");
   const timeDisplay = document.getElementById("time");
   const albumCover = document.getElementById("album-cover");
+  const modelContainer = document.getElementById('modelContainer');
+  const modelViewer = document.getElementById('modelViewer');
+  const volumeButton = document.getElementById("volume-button");
+  const volumeControl = document.getElementById("volumeControl");
+    volumeControl.value = 0.5;  // default volume level (50%)
+    audio.volume = volumeControl.value;
+
+    volumeControl.addEventListener("input", () => {
+      audio.volume = volumeControl.value;
+    });
+    
+  const progressBarContainer = document.querySelector(".progress-bar-container");
+
+    let isDragging = false;
+
+    // Click to seek
+    progressBarContainer.addEventListener("click", (e) => {
+      const rect = progressBarContainer.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const percentage = clickX / rect.width;
+      audio.currentTime = percentage * audio.duration;
+    });
+
+    // Start dragging
+    progressBarContainer.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      seekAudio(e);
+    });
+
+    // Stop dragging
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    // Drag to seek
+    document.addEventListener("mousemove", (e) => {
+      if (isDragging) {
+        seekAudio(e);
+      }
+    });
+
+// Utility: Seeks audio based on mouse event
+function seekAudio(e) {
+  const rect = progressBarContainer.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const clampedX = Math.max(0, Math.min(x, rect.width));
+  const percentage = clampedX / rect.width;
+  audio.currentTime = percentage * audio.duration;
+}
+
+
+
 
   let currentSongIndex = 0;
   let isPlaying = false;
-  let supportsMediaSession = false;
+  const supportsMediaSession = ('mediaSession' in navigator);
+  
+    function loadSong(song) {
+  audio.src = song.src;
+  songTitleElement.textContent = song.title;
+  artistElement.textContent = song.artist;
 
-  // Check the MediaSession API support of browser
-  if ('mediaSession' in navigator) {
-    supportsMediaSession = true;
-    console.log('Media Session API is supported');
+  setBackground(song.bgClass);
+  updateButtonColors(song.buttonColor);
+  loadModelForSong(song.title);
+}
+
+
+  const songThemes = {
+  "FeelxFeel.mp3": {
+    background: "linear-gradient(135deg, #00509f, #00a2df, #ffdd00, #f7e501)"
+  },
+  "Another Song": {
+    background: "linear-gradient(135deg, #8e2de2, #4a00e0)"
   }
-
-  // Array of songs with titles and image URLs
+  // Add more songs here
+  };
   const songs = [
-    { title: "Happy Song", src: "songs/happy-song.mp3", artist: "Artist 1" },
-    { title: "Let it Go", src: "songs/let-it-go.mp3", artist: "Artist 2" },
-    { title: "Summer Walk", src: "songs/summer-walk.mp3", artist: "Artist 3" },
-  ];
+  {
+    title: "Machine Love",
+    src: "songs/Machine Love.mp3",
+    artist: "JAMIE PAGE",
+    buttonColor: "#ff0045",
+    bgClass: "bg-machine-love"
+  },
+  {
+    title: "Feel it x Feel it",
+    src: "songs/FeelxFeel.mp3",
+    artist: "D4VID",
+    buttonColor: "#00509f",
+    bgClass: "bg-invincible"
+  },
+  {
+    title: "Love For You",
+    src: "songs/loveforyou.mp3",
+    artist: "LOVELI LORI",
+    buttonColor: "#fc93e8",
+    bgClass: "bg-just-a-girl"
+  },
+  {
+    title: "Back in Black",
+    src: "songs/BACKINBLACK.mp3",
+    artist: "AC/DC",
+    buttonColor: "#ff0045",
+    bgClass: "bg-iron-man"
+  }
+];
 
-  document.addEventListener("keydown", function (event) {
-    console.log("keyyyy");
-    switch (event.key) {
-      case " ": // Spacebar for play/pause
-        togglePlayPause();
-        break;
-      case "ArrowRight":
-        playNextSong();
-        break;
-      case "ArrowLeft":
-        playPreviousSong();
-        break;
-    }
-  });
 
+
+  function loadModelForSong(songTitle) {
+  const modelViewer = document.getElementById("modelViewer");
+  const modelContainer = document.getElementById("modelContainer");
+
+  // Remove old background classes
+  document.body.classList.remove("bg-machine-love", "bg-invincible", "bg-just-a-girl","bg-iron-man", "animated-bg");
+
+  if (songTitle === "Machine Love") {
+    modelViewer.src = "/3d/MachineLove.glb";
+    modelContainer.style.display = "block";
+    document.body.classList.add("bg-machine-love", "animated-bg");
+  } else if (songTitle === "Feel it x Feel it") {
+    modelViewer.src = "/3d/invincibleormarkgrayson.glb";
+    modelContainer.style.display = "block";
+    document.body.classList.add("bg-invincible", "animated-bg");
+  } else if (songTitle === "Love For You") {
+    modelViewer.src = "/3d/just_a_girl.glb";
+    modelContainer.style.display = "block";
+    document.body.classList.add("bg-just-a-girl", "animated-bg");
+  }else if (songTitle === "Back in Black") {
+    modelViewer.src = "/3d/iron_man_rig.glb";
+    modelContainer.style.display = "block";
+    document.body.classList.add("bg-iron-man", "animated-bg"); 
+  } else {
+    modelContainer.style.display = "none";
+  }
+}
+
+  function loadAndPlayCurrentSong() {
+  const currentSong = songs[currentSongIndex];
+  loadModelForSong(currentSong.title);
+  audio.src = currentSong.src;
+  audio.load();
+  if (isPlaying) audio.play();
+  playPauseButton.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+  songTitle.textContent = currentSong.title;
+
+  //  Dynamic background theme logic
+  document.body.classList.remove("bg-machine-love", "bg-invincible", "bg-just-a-girl", "default-bg");
+
+if (currentSong.title === "Machine Love") {
+  document.body.classList.add("bg-machine-love");
+} else if (currentSong.title === "Feel it x Feel it") {
+  document.body.classList.add("bg-invincible");
+} else if (currentSong.title === "Love For You") {
+  document.body.classList.add("bg-just-a-girl");
+} else if (currentSong.title === "Back in Black") {
+  document.body.classList.add("bg-iron-man");
+} else {
+  document.body.classList.add("default-bg");
+}
+
+  updateButtonColors(currentSong.buttonColor || "#ff0045");
+
+  
+
+  // 📱 Media Session API (for mobile metadata)
   if (supportsMediaSession) {
-    navigator.mediaSession.setActionHandler('nexttrack', () => {
-      playNextSong();
-      console.log('Next track button pressed');
-    });
-
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-      playPreviousSong();
-      console.log('Previous track button pressed');
-    });
-
-    navigator.mediaSession.setActionHandler('pause', () => {
-      if (isPlaying) {
-        togglePlayPause();
-      }
-      console.log('Pause button pressed');
-    });
-
-    navigator.mediaSession.setActionHandler('play', () => {
-      if (!isPlaying) {
-        togglePlayPause();
-      }
-      console.log('Play button pressed');
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: currentSong.title,
+      artist: currentSong.artist,
+      album: 'Example Album Name',
     });
   }
 
-  // Function to load and play the current song
-  function loadAndPlayCurrentSong() {
-    audio.src = songs[currentSongIndex].src;
-    audio.load();
-    if (isPlaying) {
-      audio.play();
-    }
-    playPauseButton.innerHTML = isPlaying
-      ? '<i class="fas fa-pause"></i>'
-      : '<i class="fas fa-play"></i>';
-    songTitle.textContent = songs[currentSongIndex].title;
-
-    if (supportsMediaSession) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: songs[currentSongIndex].title,
-        artist: songs[currentSongIndex].artist,
-        album: 'Example Album Name',
-      });
-    }
-
-    // Load the next song's image in advance
     prefetchNextImage();
   }
 
-  // Function to prefetch the image for the next song
   function prefetchNextImage() {
     const nextSongIndex = (currentSongIndex + 1) % songs.length;
-    const aspectRatio = "280x200"; // Desired aspect ratio for the image (vertical rectangle)
-    const searchTerm = "illustration"; // Change the search term to find illustrative images
+    const aspectRatio = "280x200";
+    const searchTerm = "illustration";
     const unsplashUrl = `https://source.unsplash.com/random/${aspectRatio}/?${searchTerm}&${Date.now()}`;
-
     const nextSongImage = new Image();
     nextSongImage.src = unsplashUrl;
-
-    // Ensure the image is fully loaded before changing the song
-    nextSongImage.onload = function () {
-      // Replace the album cover with the next song's image
-      albumCover.src = nextSongImage.src;
-    };
+    nextSongImage.onload = () => { albumCover.src = nextSongImage.src; };
   }
 
-  // Function to toggle play/pause
   function togglePlayPause() {
-    // console.log("Toggle play/pause called");
     if (isPlaying) {
       audio.pause();
     } else {
       audio.play();
     }
     isPlaying = !isPlaying;
-    playPauseButton.innerHTML = isPlaying
-      ? '<i class="fas fa-pause"></i>'
-      : '<i class="fas fa-play"></i>';
-  }
-  //Function to update the duration of the audio when it is loaded
-  audio.onloadeddata = function () {
-    const currentTime = formatTime(audio.currentTime);
-    const duration = formatTime(audio.duration);
-    timeDisplay.textContent = currentTime + " / " + duration;
+    playPauseButton.innerHTML = isPlaying ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
   }
 
-  // Event listener for timeupdate to update the progress bar
-  audio.addEventListener("timeupdate", function () {
+  audio.onloadeddata = () => {
+    timeDisplay.textContent = formatTime(audio.currentTime) + " / " + formatTime(audio.duration);
+  };
+
+  audio.addEventListener("timeupdate", () => {
     const progress = (audio.currentTime / audio.duration) * 100;
-    const currentTime = formatTime(audio.currentTime);
-    const duration = formatTime(audio.duration);
-
     progressBar.style.width = progress + "%";
     indicator.style.left = progress + "%";
-    timeDisplay.textContent = currentTime + " / " + duration;
+    timeDisplay.textContent = formatTime(audio.currentTime) + " / " + formatTime(audio.duration);
   });
 
-  // Event listener for when the song changes
-  audio.addEventListener("ended", function () {
+  audio.addEventListener("ended", () => {
     resetProgressBar();
     currentSongIndex = (currentSongIndex + 1) % songs.length;
     loadAndPlayCurrentSong();
   });
 
-  // Function to reset the progress bar when the song changes
   function resetProgressBar() {
     progressBar.style.width = "0%";
     indicator.style.left = "0%";
     timeDisplay.textContent = "0:00 / 0:00";
   }
 
-  // Event listener for the play/pause button
   playPauseButton.addEventListener("click", togglePlayPause);
 
   function playNextSong() {
@@ -161,8 +236,6 @@ document.addEventListener("DOMContentLoaded", function () {
     currentSongIndex = (currentSongIndex + 1) % songs.length;
     loadAndPlayCurrentSong();
   }
-
-  // Event listener for the next button
   nextButton.addEventListener("click", playNextSong);
 
   function playPreviousSong() {
@@ -170,48 +243,36 @@ document.addEventListener("DOMContentLoaded", function () {
     currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
     loadAndPlayCurrentSong();
   }
-
-  // Event listener for the previous button
   prevButton.addEventListener("click", playPreviousSong);
 
+  document.addEventListener("keydown", (event) => {
+    if (event.key === " ") {
+      event.preventDefault();
+      togglePlayPause();
+    } else if (event.key === "ArrowRight") {
+      playNextSong();
+    } else if (event.key === "ArrowLeft") {
+      playPreviousSong();
+    }
+  });
 
+  if (supportsMediaSession) {
+    navigator.mediaSession.setActionHandler('nexttrack', playNextSong);
+    navigator.mediaSession.setActionHandler('previoustrack', playPreviousSong);
+    navigator.mediaSession.setActionHandler('pause', () => { if (isPlaying) togglePlayPause(); });
+    navigator.mediaSession.setActionHandler('play', () => { if (!isPlaying) togglePlayPause(); });
+  }
 
-  // Function to format time (e.g., "0:00")
   function formatTime(time) {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
-    const formattedTime = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-    return formattedTime;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   }
 
+  // document.getElementById("font-button").addEventListener("click", () => {
+  //   const selectedFont = document.getElementById("font-selector").value;
+  //   document.getElementById("Music").style.fontFamily = selectedFont;
+  // });
 
-
-    const fontButton = document.getElementById("font-button");
-
-    fontButton.addEventListener("click", function () {
-        changeFont();
-    });
-
-    function changeFont() {
-        const fontSelector = document.getElementById('font-selector');
-        const selectedFont = fontSelector.value;
-        const musicPlayer = document.getElementById('Music');
-
-        musicPlayer.style.fontFamily = selectedFont;
-    }
-
-    // Load and play the initial song
-    loadAndPlayCurrentSong();
-
+  loadAndPlayCurrentSong();
 });
-var color_selection=document.querySelectorAll('.select_color')
-var color_array=['#81CACF','#E68398','#7EDE80'];
-var container=document.querySelector('.container');
-var image=document.querySelector('.image-container');
-color_selection.forEach(item =>{
-  item.addEventListener('click',()=>{
-    var getItemNumber=item.getAttribute('data-number');
-    document.body.style.background=color_array[getItemNumber-1];
-    container.style.background='none';
-  })
-})
