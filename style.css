@@ -6,9 +6,8 @@ body {
   height: 100vh;
   display: block;
   color: white;
+  overflow-x: hidden; /* Prevent horizontal scroll on mobile */
 }
-
-
 
 /* Container holding music and model side by side */
 /* Main container centers content vertically and horizontally */
@@ -26,7 +25,6 @@ body {
   overflow-y: auto;     /* allow vertical scroll if needed */
 }
 
-
 /* Model container styling */
 #modelContainer {
   width: 100%;
@@ -36,10 +34,20 @@ body {
   justify-content: center;
 }
 
+/* Make sure model-viewer tag fills container */
 model-viewer {
   width: 100%;
-  max-width: 600px;
-  height: 400px;
+  height: 100%;
+  max-width: 100%;
+  max-height: 400px; /* limit max height on bigger screens */
+  display: block; /* fix inline default display */
+}
+
+/* Model viewer ID styling */
+#modelViewer {
+  width: 100%;
+  height: 200px;
+  max-width: 500px;
 }
 
 /* Music player */
@@ -54,15 +62,6 @@ model-viewer {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-
-
-/* Make sure model-viewer fills container */
-#modelViewer {
-  width: 100%;
-  height: 200px;
-  max-width: 500px;
 }
 
 /* Controls and buttons style kept from your code */
@@ -141,6 +140,25 @@ button:hover {
   }
   model-viewer {
     height: 400px;
+  }
+
+  /* Increase model viewer height */
+  #modelViewer {
+    height: 300px;
+    max-width: 100%;
+  }
+
+  /* Wider music player for mobile */
+  #musicPlayer {
+    max-width: 90vw;
+  }
+}
+
+/* Buttons bigger on very small screens for easier tapping */
+@media (max-width: 480px) {
+  button {
+    padding: 20px 35px;
+    font-size: 22px;
   }
 }
 
