@@ -126,19 +126,19 @@ function seekAudio(e) {
   document.body.classList.remove("bg-machine-love", "bg-invincible", "bg-just-a-girl","bg-iron-man", "animated-bg");
 
   if (songTitle === "Machine Love") {
-    modelViewer.src = "/3d/MachineLove.glb";
+    modelViewer.src = "3d/MachineLove.glb";
     modelContainer.style.display = "block";
     document.body.classList.add("bg-machine-love", "animated-bg");
   } else if (songTitle === "Feel it x Feel it") {
-    modelViewer.src = "/3d/invincibleormarkgrayson.glb";
+    modelViewer.src = "3d/invincibleormarkgrayson.glb";
     modelContainer.style.display = "block";
     document.body.classList.add("bg-invincible", "animated-bg");
   } else if (songTitle === "Love For You") {
-    modelViewer.src = "/3d/just_a_girl.glb";
+    modelViewer.src = "3d/just_a_girl.glb";
     modelContainer.style.display = "block";
     document.body.classList.add("bg-just-a-girl", "animated-bg");
   }else if (songTitle === "Back in Black") {
-    modelViewer.src = "/3d/iron_man_rig.glb";
+    modelViewer.src = "3d/iron_man_rig.glb";
     modelContainer.style.display = "block";
     document.body.classList.add("bg-iron-man", "animated-bg"); 
   } else {
