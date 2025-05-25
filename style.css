@@ -1,0 +1,192 @@
+/* Body takes full viewport, no centering */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: block;
+  color: white;
+}
+
+
+
+/* Container holding music and model side by side */
+/* Main container centers content vertically and horizontally */
+/* Container stacks model and music vertically */
+#mainContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30px;
+  min-height: 100vh;    /* allow growth */
+  width: 100vw;
+  padding: 40px 20px 20px;
+  box-sizing: border-box;
+  overflow-y: auto;     /* allow vertical scroll if needed */
+}
+
+
+/* Model container styling */
+#modelContainer {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+}
+
+model-viewer {
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+}
+
+/* Music player */
+#musicPlayer {
+  width: 100%;
+  max-width: 200px;
+  margin-top: 10px; /* small gap */
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 30px;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+/* Make sure model-viewer fills container */
+#modelViewer {
+  width: 100%;
+  height: 200px;
+  max-width: 500px;
+}
+
+/* Controls and buttons style kept from your code */
+.controls {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+button {
+  padding: 15px 30px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  background-color: rgba(0, 238, 255, 0.8);
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Album cover image styling */
+#album-cover {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* Progress bar container */
+.progress-bar-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px auto 0;
+  height: 10px;
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 5px;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: rgba(0, 238, 255, 0.8);
+  width: 0;
+  border-radius: 5px;
+  transition: width 0.1s linear;
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  background-color: rgba(0, 238, 255, 0.8);
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: left 0.1s linear;
+}
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  #mainContainer {
+    flex-direction: column;
+    height: auto;
+  }
+  #musicPlayer,
+  #modelContainer {
+    max-width: 100%;
+    flex: none;
+    margin-bottom: 20px;
+  }
+  model-viewer {
+    height: 400px;
+  }
+}
+
+/* Gradient animation */
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.animated-bg {
+  background-size: 200% 200%;
+  animation: gradient-animation 15s ease infinite;
+}
+
+.default-bg {
+  background: linear-gradient(279deg, #c70039, #f94c10, #f8de22);
+  background-size: 180% 180%;
+  animation: gradient-animation 15s ease infinite;
+}
+
+.bg-machine-love {
+  background: linear-gradient(135deg, #ff0045, #06053b, #eda7ba, #d924d5, #3f4750);
+  background-size: 180% 180%;
+  animation: gradient-animation 15s ease infinite;
+}
+
+.bg-invincible {
+  background: linear-gradient(135deg, #00509f, #00a2df, #ffdd00, #f7e501);
+  background-size: 180% 180%;
+  animation: gradient-animation 15s ease infinite;
+}
+
+.bg-just-a-girl {
+  background: linear-gradient(135deg, #fec0ff, #fc93e8, #ff86e0, #ee4fc5, #df37d6);
+  background-size: 180% 180%;
+  animation: gradient-animation 15s ease infinite;
+}
+
+.bg-iron-man {
+   background: linear-gradient(135deg, #b71c1c, #ffb300, #fdd835, #4a4a4a, #d32f2f);
+  background-size: 180% 180%;
+  animation: gradient-animation 15s ease infinite;
+}
