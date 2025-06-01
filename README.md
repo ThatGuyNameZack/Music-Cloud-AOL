@@ -14,8 +14,7 @@ All Models come from sketchlab and their creators.
 
 ##  Live Demo
 
-Try the app live on GitHub Pages:  
- [https://your-username.github.io/your-repo-name](https://your-username.github.io/your-repo-name)
+Link : https://thatguynamezack.github.io/Music-Cloud-AOL/
 
 
 
